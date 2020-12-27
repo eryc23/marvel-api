@@ -1,12 +1,12 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+<!doctype html>
+<html lang="pt">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>Marvel Characters</title>
+
+    <link href="https://getbootstrap.com/docs/5.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
 
     <style>
         body{
@@ -20,6 +20,7 @@
         .corpo img{
             border-left: 3px solid #fd3b3b;
             cursor: pointer;
+            width: 100%;
         }
         .corpo p{
             position: relative;
@@ -64,7 +65,8 @@
         <div class="corpo row">
             <div class="col-12 tela-1"></div>
             <?php
-            $ts = date();
+            $ts = new DateTime();
+            $ts = $ts->getTimestamp();
             $puK = "fe68bfd9e876f2bd17a1688dbaae58a3";
             $prK = "db341d8c9fa77cc2975c7544df49e42b46ce659e";
             $hash = MD5($ts.$prK.$puK);
@@ -73,7 +75,6 @@
             $pg = isset($_GET['pg']) ? ($_GET['pg'] >= 0 ? $_GET['pg'] : 0) : 0;
 
             $api = 'http://gateway.marvel.com/v1/public/'.$buscador.'?'.$procurador.'ts='.$ts.'&apikey='.$puK.'&hash='.$hash.'&offset='.$pg.'&limit=20';
-            echo $ts;
             $api = file_get_contents($api,true);
             $api = json_decode($api,true);
 
@@ -87,8 +88,8 @@
                 }
 
                 echo "<div class='col-3'>";
-                    echo "<img alt='no-image' onclick=\"chamai(".$indt.", '".$a['name']."','".$a['thumbnail']['path']."','".strip_tags(addslashes($a['description']))."','".date("H:m d-m-Y",$a['modified'])."')\" onerror=\"this.onerror=null; this.src='http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available/portrait_incredible.jpg'\" src='".$a['thumbnail']['path']."/portrait_incredible.jpg' width='100%'>";
-                    echo "<p>".$a['name']."</p>";                    
+                    echo "<img alt='no-image' onclick=\"chamai(".$indt.", '".$a['name']."','".$a['thumbnail']['path']."','".strip_tags(addslashes(htmlspecialchars($a['description'])))."','".date("H:m d-m-Y",$a['modified'])."')\" onerror=\"this.onerror=null; this.src='http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available/portrait_incredible.jpg'\" src='".$a['thumbnail']['path']."/portrait_incredible.jpg'>";
+                    echo "<p>".$a['name']."</p>";
                 echo "</div>";
                 $cont++;
             }
