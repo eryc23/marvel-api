@@ -34,7 +34,10 @@
         }
         .rodape{
             margin: 0 auto;
-            padding: 50px;
+            padding: 30px;
+        }
+        .py-5 a{
+            text-decoration: none;
         }
         .tela-1,.tela-2, .tela-3, .tela-4, .tela-5{
             height: auto;
@@ -57,19 +60,21 @@
             </form>
         </div>
     </nav>
-    <img style="position:fixed;z-index:9999999;right:0%;top:68px;" class="img-fluid" width="200px" src="spider.png">
     <div class="container">
         <div class="corpo row">
             <div class="col-12 tela-1"></div>
             <?php
             $ts = date();
-            $puK = "substituir key publica";
-            $prK = "substituir key privada";
+            $puK = "fe68bfd9e876f2bd17a1688dbaae58a3";
+            $prK = "db341d8c9fa77cc2975c7544df49e42b46ce659e";
             $hash = MD5($ts.$prK.$puK);
             $buscador = 'characters';
+            $procurador = isset($_GET['search']) ? 'nameStartsWith='.$_GET['search'].'&' : "";
             $pg = isset($_GET['pg']) ? ($_GET['pg'] >= 0 ? $_GET['pg'] : 0) : 0;
 
-            $api = file_get_contents('http://gateway.marvel.com/v1/public/'.$buscador.'?ts='.$ts.'&apikey='.$puK.'&hash='.$hash.'&offset='.$pg.'&limit=20',true);
+            $api = 'http://gateway.marvel.com/v1/public/'.$buscador.'?'.$procurador.'ts='.$ts.'&apikey='.$puK.'&hash='.$hash.'&offset='.$pg.'&limit=20';
+            echo $ts;
+            $api = file_get_contents($api,true);
             $api = json_decode($api,true);
 
             $cont = 0;
@@ -82,7 +87,7 @@
                 }
 
                 echo "<div class='col-3'>";
-                    echo "<img alt='no-image' onclick=\"chamai(".$indt.", '".$a['name']."','".$a['thumbnail']['path']."','".addslashes($a['description'])."','".date("H:m d-m-Y",$a['modified'])."')\" onerror=\"this.onerror=null; this.src='http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available/portrait_incredible.jpg'\" src='".$a['thumbnail']['path']."/portrait_incredible.jpg' width='100%'>";
+                    echo "<img alt='no-image' onclick=\"chamai(".$indt.", '".$a['name']."','".$a['thumbnail']['path']."','".strip_tags(addslashes($a['description']))."','".date("H:m d-m-Y",$a['modified'])."')\" onerror=\"this.onerror=null; this.src='http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available/portrait_incredible.jpg'\" src='".$a['thumbnail']['path']."/portrait_incredible.jpg' width='100%'>";
                     echo "<p>".$a['name']."</p>";                    
                 echo "</div>";
                 $cont++;
@@ -90,18 +95,30 @@
             ?>
         </div>
     </div>
-    <div class="btn-toolbar">
-        <div class="btn-group rodape">
-            <?php
-                if(isset($_GET['pg']) && $_GET['pg'] > 0){
-                    echo '<a type="button" href="?pg='.($pg-20).'" class="btn btn-danger"><< Prev</a>';
-                }else{
-                    echo '<button type="button" class="btn btn-danger" disabled="disabled"><< Prev</button>';
-                }
-                echo '<a type="button" href="?pg='.($pg+20).'" class="btn btn-danger">Next >></a>';
-            ?>
+    
+    <footer class="text-muted py-5">
+        <div class="container">
+            <div class="btn-toolbar">
+                <div class="btn-group rodape">
+                    <?php
+                    if(!isset($_GET['search'])){
+                        if(isset($_GET['pg']) && $_GET['pg'] > 0){
+                            echo '<a type="button" href="?pg='.($pg-20).'" class="btn btn-danger"><< Prev</a>';
+                        }else{
+                            echo '<button type="button" class="btn btn-danger" disabled="disabled"><< Prev</button>';
+                        }
+                        echo '<a type="button" href="?pg='.($pg+20).'" class="btn btn-danger">Next >></a>';
+                    }
+                    ?>
+                </div>
+            </div>
+            <p class="float-end mb-1">
+                <a href="#">Back to top</a>
+            </p>
+            <p class="mb-0">Open source project <a href="https://github.com/eryc23/marvel-api">Visit the Github</a> or read the <a href="https://developer.marvel.com/">getting started guide</a>.</p>
+            <p class="mb-1">Marvel API © 2020</p>
         </div>
-    </div>
+    </footer>
 
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script>
