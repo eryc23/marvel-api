@@ -6,7 +6,7 @@
 
     <title>Marvel Characters</title>
 
-    <link href="https://getbootstrap.com/docs/5.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
 
     <style>
         body{
@@ -48,6 +48,16 @@
             background: linear-gradient(78deg, rgba(0,0,0,0),rgba(0,0,0,0.9),rgba(0,0,0,0));
             text-shadow: 1px 1px 1px black;
         }
+        .tela-m{
+            position: fixed;
+            top: 0px;
+            z-index: 999999;
+            height: 100%;
+            display: none;
+            padding: 20px;
+            background: rgba(0,0,0,0.93);
+            text-shadow: 1px 1px 1px black;
+        }        
     </style>
 </head>
 <body>
@@ -63,6 +73,7 @@
     </nav>
     <div class="container">
         <div class="corpo row">
+            <div class="col-12 tela-m"></div>
             <div class="col-12 tela-1"></div>
             <?php
             $ts = new DateTime();
@@ -87,7 +98,7 @@
                     echo '<div class="col-12 tela-'.$indt.'"></div>';
                 }
 
-                echo "<div class='col-3'>";
+                echo "<div class='col-md-3'>";
                     echo "<img alt='no-image' onclick=\"chamai(".$indt.", '".$a['name']."','".$a['thumbnail']['path']."','".strip_tags(addslashes(htmlspecialchars($a['description'])))."','".date("H:m d-m-Y",$a['modified'])."')\" onerror=\"this.onerror=null; this.src='http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available/portrait_incredible.jpg'\" src='".$a['thumbnail']['path']."/portrait_incredible.jpg'>";
                     echo "<p>".$a['name']."</p>";
                 echo "</div>";
@@ -125,21 +136,37 @@
     <script>
         function chamai(pg,nome, thumb,desc, data){
             var desc = desc == "" ? "Description not found..." : desc;
-
-            $('.tela-1, .tela-2, .tela-3, .tela-4, .tela-5').fadeOut();
-            $('.tela-'+pg).slideDown();
-            $('.tela-'+pg).html(`
-            <div class="row">
-                <div class="col-6">
-                    <h1>${nome}</h1>
-                    <h6>&#128336; ${data}</h6>
-                    <span>${desc}</span><br><br>
-                    <h6>Comics</h6>
-                </div>
-                <div class="col-6">
-                    <img class="img-fluid float-start" onerror="this.onerror=null; this.src='http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg'" src="${thumb}.jpg">
-                </div>
-            </div>`);
+            if($(window).height() > $(window).width()){
+                $('.tela-m').slideDown();
+                $('.tela-m').html(`
+                <div class="row">
+                    <div class="col-12">
+                        <h5>${nome}</h5>
+                        <img class="img-fluid" onerror="this.onerror=null; this.src='http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg'" src="${thumb}.jpg">
+                        <hr>
+                        <h6>&#128336; ${data}</h6>
+                        <span>${desc}</span><br><br>
+                        <h6><b>Comics</b></h6>
+                        <hr>
+                        <button type="button" onclick="$('.tela-m').slideUp()" class="btn btn-outline-danger float-end">Close</button>
+                    </div>
+                </div>`);
+            }else{
+                $('.tela-1, .tela-2, .tela-3, .tela-4, .tela-5').fadeOut();
+                $('.tela-'+pg).slideDown();
+                $('.tela-'+pg).html(`
+                <div class="row">
+                    <div class="col-6">
+                        <h1>${nome}</h1>
+                        <h6>&#128336; ${data}</h6>
+                        <span>${desc}</span><br><br>
+                        <h6><b>Comics</b></h6>
+                    </div>
+                    <div class="col-6">
+                        <img class="img-fluid float-start" onerror="this.onerror=null; this.src='http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg'" src="${thumb}.jpg">
+                    </div>
+                </div>`);
+            }
         }
     </script>
 </body>
