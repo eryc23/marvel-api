@@ -78,8 +78,8 @@
             <?php
             $ts = new DateTime();
             $ts = $ts->getTimestamp();
-            $puK = "fe68bfd9e876f2bd17a1688dbaae58a3";
-            $prK = "db341d8c9fa77cc2975c7544df49e42b46ce659e";
+            $puK = "INSERIR KEY PUBLICA";
+            $prK = "INSERIR KEY PRIVADA";
             $hash = MD5($ts.$prK.$puK);
             $buscador = 'characters';
             $procurador = isset($_GET['search']) ? 'nameStartsWith='.$_GET['search'].'&' : "";
